@@ -3,6 +3,8 @@ from database import MedicineDetails
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import pandas as pd
+import plotly.graph_objs as go
+import plotly.express as px
 from PIL import Image
 import datetime
 
@@ -30,12 +32,12 @@ selOption = sidebar.selectbox('Select any option', options)
 
 def get_input():
      
-     CustomerN_v = st.sidebar.text_input("CustomerN ")
-     MedicineN_v = st.sidebar.text_input("MedicineN ")
-     ManufeDate_v = st.sidebar.date_input("ManufeDate ")
-     PuraDate_v = st.sidebar.date_input("PuraDate ")
-     MedicineStock_v = st.sidebar.text_input("MedicineStock ")
-     ReturnDate_v= st.sidebar.date_input("ReturnDate ")
+     CustomerN_v = st.sidebar.text_input("Customer Name ")
+     MedicineN_v = st.sidebar.text_input("Medicine Name ")
+     ManufeDate_v = st.sidebar.date_input("Manufector Date ")
+     PuraDate_v = st.sidebar.date_input("Puraching Date ")
+     MedicineStock_v = st.sidebar.text_input("Medicine Stock ")
+     ReturnDate_v= st.sidebar.date_input("Return Date ")
 
      
      btn = sidebar.button("Save Data!!")   
@@ -48,7 +50,7 @@ def get_input():
                session.add(Medicine)
                session.commit()
 
-               st.success('Data Saved!!')
+               st.success('Data Saved')
           except Exception as e:
                print(e)
                st.error('Error in saving data')
@@ -77,16 +79,18 @@ def showDetails():
 
     Medicine = df[df['MedicineN'] == selMedicine]
    
+    st.bar_chart(MedicineDetails.set_index('MedicineN')['MedicineStock'])
+
 
     col1, col2, col3, col4, col5, col6, col7  = st.columns(7)
 
     col1.subheader("Id")
-    col2.subheader("CustomerN")
-    col3.subheader("MedicineN")
-    col4.subheader("ManufeDate")
-    col5.subheader('PuraDate')
-    col6.subheader('MedicineStock')  
-    col7.subheader('ReturnDate')  
+    col2.subheader("Customer Name")
+    col3.subheader("Medicine Name")
+    col4.subheader("Manufector Date")
+    col5.subheader('Puraching Date')
+    col6.subheader('Medicine Stock')  
+    col7.subheader('Return Date')  
 
     for entry in data:
          col1.text(entry.id)
@@ -98,6 +102,8 @@ def showDetails():
          col7.text(entry.ReturnDate)
 
 
+
+
 def searchMedicine():
     st.header("Search Medicine")
     st.markdown("---")
@@ -107,20 +113,36 @@ def searchMedicine():
 
     if search_Medicine and search_btn:
         res = session.query(MedicineDetails).filter_by(id=search_Medicine).first()
-        col8, col9, col10, col11, col12, col13, col14 = st.columns(6)
+        col8, col9, col10, col11, col12, col13, col14 = st.columns(7)
         if res:
             col8.text(res.id) 
-            col9.text(res.CustomreN)
+            col9.text(res.CustomerN)
             col10.text(res.MedicineN)
             col11.text(res.ManufeDate)
             col12.text(res.PuraDate)
             col13.text(res.MedicineStock)
             col14.text(res.ReturnDate)
 
+#def get_input():
+    # col15.subheader("Medicine Name")  
+     #col16.subheader("Medicine Stock")    
+
+
 
 if selOption == options[0]:
     showDetails()
 elif selOption == options[1]:
     searchMedicine()
+
+del_id= st.number_input("Enter id to delete")
+del_btn = st.button("Delete")
+
+if del_id and del_btn:
+          to_delete = session.query(MedicineDetails).filter_by(id=del_id).first()
+          session.delete(to_delete)
+          session.commit()
+          st.success('Data Deleted')    
+
+
 
 

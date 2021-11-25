@@ -16,6 +16,8 @@ class MedicineDetails(Base):
     MedicineStock = Column(String)
     ReturnDate = Column(Date)
 
+    
+
 if __name__ == "__main__":
     engine = create_engine("sqlite:///mydatabase.sqlite3")
     Base.metadata.create_all(engine)
