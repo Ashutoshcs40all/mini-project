@@ -26,8 +26,9 @@ sidebar.header('Dashboard Home')
 def intro():
     st.title('Medicine Inventory Application')
    
-    st.markdown('- Simple Web Page Using Python With Streamlit library ')
+    st.markdown('- Simple Web Page Using Python With Streamlit library. ')
     st.caption('- Medical inventory Application is used to track medical supplies and prescription drugs within a single practice or an entire hospital system.')
+    st.markdown('- We can easily understand the data using graph(via plotly and matplotlib library used).')
     st.markdown('------ ')  
 
 
