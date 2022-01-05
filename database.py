@@ -1,6 +1,9 @@
 from datetime import datetime
+from numpy import string_
+from numpy.lib.type_check import imag
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, create_engine
+from sqlalchemy.sql.expression import column
 from sqlalchemy.sql.sqltypes import Date
 
 Base = declarative_base()
@@ -16,11 +19,14 @@ class MedicineDetails(Base):
     MedicineStock = Column(String)
     ReturnDate = Column(Date)
 
-class specificDeatils():
-    __tablename__ = "Specific Medicine Details"
-    MedicineN = Column(String)
-    MedicineStock = Column(String)
-
+class userDeatails():
+    __tablename__ = "User Details"
+    id = Column(Integer, primary_key=True, autoincrement= True)
+    names = column(String)
+    username = Column(String)
+    Email_id = Column(String)
+    Password = Column(String)
+    Image = imag.open('homeopathy.jpg')
 
 if __name__ == "__main__":
     engine = create_engine("sqlite:///mydatabase.sqlite3")

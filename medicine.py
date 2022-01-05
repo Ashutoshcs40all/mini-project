@@ -1,5 +1,7 @@
 import streamlit as st
+
 from database import MedicineDetails
+from database import userDeatails
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import pandas as pd
@@ -20,6 +22,7 @@ session = Session()
 
 
 sidebar = st.sidebar
+
 
 sidebar.header('Dashboard Home')
 
@@ -75,6 +78,25 @@ elif selOption == options[2]:
      viewData()
 
 
+#def main():
+    # """Medicine Inventory Application"""
+
+    # st.title("Medicine Inventory Application")
+
+    # menu = ["Home", "Login", "Signup"]
+     #choice = st.sidebar.selectbox("Menu", menu)
+
+     #if choice =="Home":
+        #  st.sidebar("Home")
+
+     #elif choice == "Login":
+      #    st.subheader("Login Section")
+
+        #  username = st.sidebar.text_input("User Name")    
+         # password = st.sidebar.text_input("Password",type='')
+         # if st.button("Login"):
+            #   st.success("Logged In as{}" .format(username)) 
+
 def showDetails():
     st.header('Medicine Data')
     st.markdown('---')
@@ -122,10 +144,10 @@ def searchMedicine():
     search_btn = st.button("Search")
 
     if search_Medicine and search_btn:
-        res = session.query(MedicineDetails).filter_by(id=search_Medicine).first()
+        res = session.query(MedicineDetails).filter_by(MedicineN=search_Medicine).first()
         col8, col9, col10, col11, col12, col13, col14 = st.columns(7)
         if res:
-            col8.text(res.id) 
+            col8.text(res.id)
             col9.text(res.CustomerN)
             col10.text(res.MedicineN)
             col11.text(res.ManufeDate)
