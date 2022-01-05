@@ -1,3 +1,4 @@
+from sqlalchemy.sql.functions import current_date, current_user
 import streamlit as st
 
 from database import MedicineDetails
@@ -13,6 +14,8 @@ engine = create_engine('sqlite:///mydatabase.sqlite3')
                       
 Session = sessionmaker(engine)
 session = Session()
+Logged_IN = False
+current_user = {}
 
 #st.write("""
 # Medicine Inventory Application
@@ -27,16 +30,20 @@ sidebar = st.sidebar
 sidebar.header('Dashboard Home')
 
 def intro():
-    st.title('Medicine Inventory Application')
+     
+     st.title('Medicine Inventory Application')
    
-    st.markdown('- Simple Web Page Using Python With Streamlit library. ')
-    st.caption('- Medical inventory Application is used to track medical supplies and prescription drugs within a single practice or an entire hospital system.')
-    st.markdown('- We can easily understand the data using graph(via plotly and matplotlib library used).')
-    st.markdown('------ ')  
+     st.markdown('- Simple Web Page Using Python With Streamlit library. ')
+     st.caption('- Medical inventory Application is used to track medical supplies and prescription drugs within a single practice or an entire hospital system.')
+     st.markdown('- We can easily understand the data using graph(via plotly and matplotlib library used).')
+     st.markdown('------ ')  
 
 
 
 def get_input():
+
+     if not Logged_IN: 
+          return
      
      CustomerN_v = st.sidebar.text_input("Customer Name")
      MedicineN_v = st.sidebar.text_input("Medicine Name")
@@ -78,7 +85,16 @@ elif selOption == options[2]:
      viewData()
 
 
-#def main():
+def Register():
+    # if Logged_IN: 
+         # return
+     names = st.sidebar.text_input(" Name")
+     username = st.sidebar.text_input("Username")
+     Email_id = st.sidebar.text_input("Email Id")
+     Password = st.sidebar.text_input("Password")
+
+     btn = sidebar.button("Save UserDetails!!") 
+
     # """Medicine Inventory Application"""
 
     # st.title("Medicine Inventory Application")

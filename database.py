@@ -26,7 +26,7 @@ class userDeatails():
     username = Column(String)
     Email_id = Column(String)
     Password = Column(String)
-    Image = imag.open('homeopathy.jpg')
+   
 
 if __name__ == "__main__":
     engine = create_engine("sqlite:///mydatabase.sqlite3")
