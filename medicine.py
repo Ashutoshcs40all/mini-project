@@ -1,4 +1,4 @@
-from sqlalchemy.sql.functions import current_date, current_user
+from sqlalchemy.sql.functions import current_date, current_user, user
 import streamlit as st
 
 from database import MedicineDetails
@@ -44,6 +44,29 @@ def get_input():
 
      if not Logged_IN: 
           return
+
+def Register():
+    # if Logged_IN: 
+         # return
+     Names_v = st.sidebar.text_input(" Name")
+     Username_v = st.sidebar.text_input("Username")
+     Email_id_v = st.sidebar.text_input("Email Id")
+     Password_v = st.sidebar.text_input("Password")
+
+     btn = sidebar.button("Save UserDetails!!") 
+
+     if btn:
+          try:
+               Register = userDeatails( Names = Names_v , Username = Username_v, Email_id = Email_id_v, Password = Password_v)
+               
+                                   
+               session.add(Register)
+               session.commit()
+
+               st.success('Data Saved')
+          except Exception as e:
+               print(e)
+               st.error('Error in saving data')         
      
      CustomerN_v = st.sidebar.text_input("Customer Name")
      MedicineN_v = st.sidebar.text_input("Medicine Name")
@@ -83,17 +106,6 @@ elif selOption == options[1]:
      get_input()
 elif selOption == options[2]:
      viewData()
-
-
-def Register():
-    # if Logged_IN: 
-         # return
-     names = st.sidebar.text_input(" Name")
-     username = st.sidebar.text_input("Username")
-     Email_id = st.sidebar.text_input("Email Id")
-     Password = st.sidebar.text_input("Password")
-
-     btn = sidebar.button("Save UserDetails!!") 
 
     # """Medicine Inventory Application"""
 
@@ -169,7 +181,22 @@ def searchMedicine():
             col11.text(res.ManufeDate)
             col12.text(res.PuraDate)
             col13.text(res.MedicineStock)
-            col14.text(res.ReturnDate)         
+            col14.text(res.ReturnDate)    
+
+
+def searchuser():
+    st.header("Search user")
+    st.markdown("---")
+
+    search_user = st.text_input("Enter username to search")
+    search_btn = st.button("Search")
+
+     
+    if search_user and search_btn:
+          res = session.query(userDeatails).filter_by(Username=search_user).first()
+       
+          if res:(True)
+                            
 
 #if selOption == options[0]:
   #  intro()

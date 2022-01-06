@@ -22,8 +22,8 @@ class MedicineDetails(Base):
 class userDeatails():
     __tablename__ = "User Details"
     id = Column(Integer, primary_key=True, autoincrement= True)
-    names = column(String)
-    username = Column(String)
+    Names = column(String)
+    Username = Column(String)
     Email_id = Column(String)
     Password = Column(String)
    
