@@ -19,7 +19,7 @@ class MedicineDetails(Base):
     MedicineStock = Column(String)
     ReturnDate = Column(Date)
 
-class userDeatails():
+class UserDeatails(Base):
     __tablename__ = "User Details"
     id = Column(Integer, primary_key=True, autoincrement= True)
     Names = column(String)

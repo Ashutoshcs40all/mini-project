@@ -1,8 +1,7 @@
-from sqlalchemy.sql.functions import current_date, current_user, user
 import streamlit as st
-
+from sqlalchemy.sql.functions import current_date, current_user, user
 from database import MedicineDetails
-from database import userDeatails
+from database import UserDeatails
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import pandas as pd
@@ -10,7 +9,7 @@ import plotly.express as px
 from PIL import Image
 import datetime
 
-engine = create_engine('sqlite:///mydatabase.sqlite3')
+engine = create_engine('sqlite:///mydatabase.sqlite3', connect_args={'check_same_thread': False})
                       
 Session = sessionmaker(engine)
 session = Session()
@@ -22,7 +21,7 @@ current_user = {}
 #**Visually** show data on a Medicine! 
 #""")
 
-
+options = ['Introduction','Register', 'Login']
 
 sidebar = st.sidebar
 
@@ -40,11 +39,6 @@ def intro():
 
 
 
-def get_input():
-
-     if not Logged_IN: 
-          return
-
 def Register():
     # if Logged_IN: 
          # return
@@ -57,7 +51,7 @@ def Register():
 
      if btn:
           try:
-               Register = userDeatails( Names = Names_v , Username = Username_v, Email_id = Email_id_v, Password = Password_v)
+               Register = UserDeatails( Names = Names_v , Username = Username_v, Email_id = Email_id_v, Password = Password_v)
                
                                    
                session.add(Register)
@@ -67,7 +61,14 @@ def Register():
           except Exception as e:
                print(e)
                st.error('Error in saving data')         
-     
+
+
+def get_input():
+
+     if not Logged_IN: 
+          return
+   
+     btn = sidebar.button("Save Data!!")   
      CustomerN_v = st.sidebar.text_input("Customer Name")
      MedicineN_v = st.sidebar.text_input("Medicine Name")
      ManufeDate_v = st.sidebar.date_input("Manufector Date")
@@ -75,10 +76,6 @@ def Register():
      MedicineStock_v = st.sidebar.text_input("Medicine Stock")
      ReturnDate_v= st.sidebar.date_input("Return Date ")
 
-
-   
-        
-     btn = sidebar.button("Save Data!!")   
 
      if btn:
           try:
@@ -92,20 +89,11 @@ def Register():
           except Exception as e:
                print(e)
                st.error('Error in saving data')
-
-options = ['Introduction','Add Data', 'View Data']
-selOption = sidebar.selectbox('Select any option', options)               
+               
 
 def viewData():
      st.header('View Data Header')
 
-
-if selOption == options[0]:
-    intro()
-elif selOption == options[1]:
-     get_input()
-elif selOption == options[2]:
-     viewData()
 
     # """Medicine Inventory Application"""
 
@@ -184,33 +172,34 @@ def searchMedicine():
             col14.text(res.ReturnDate)    
 
 
-def searchuser():
+def login():
     st.header("Search user")
     st.markdown("---")
 
-    search_user = st.text_input("Enter username to search")
+    user_name = st.text_input("Enter username")
+    pwd = st.text_input("Enter password")
     search_btn = st.button("Search")
 
      
-    if search_user and search_btn:
-          res = session.query(userDeatails).filter_by(Username=search_user).first()
+    if user_name and pwd and search_btn:
+          res = session.query(UserDeatails).filter_by(Username=user_name).first()
        
-          if res:(True)
-                            
+          if res and res.password == user_name:
+               st.success('Logged in successfully')
+               options = ['Introduction','Add Data', 'View Data']
 
-#if selOption == options[0]:
-  #  intro()
 
-if selOption == options[1]:
-    showDetails()
-elif selOption == options[2]:
-   searchMedicine()
 
-del_id= st.number_input("Enter id to delete")
-del_btn = st.button("Delete")
+selOption = sidebar.selectbox('Select any option', options)
 
-if del_id and del_btn:
-          to_delete = session.query(MedicineDetails).filter_by(id=del_id).first()
-          session.delete(to_delete)
-          session.commit()
-          st.success('Data Deleted')       
+
+if selOption == options[0]:
+    intro()
+elif selOption == 'Register':
+     Register()
+elif selOption == 'Login':
+     login()
+elif selOption == 'Add Data':
+     get_input()
+elif selOption == 'View Data':
+     viewData()
