@@ -1,5 +1,4 @@
 import streamlit as st
-from sqlalchemy.sql.functions import current_date, current_user, user
 from database import MedicineDetails
 from database import UserDeatails
 from sqlalchemy.orm import sessionmaker
@@ -8,26 +7,44 @@ import pandas as pd
 import plotly.express as px
 from PIL import Image
 import datetime
+import streamlit_authenticator as stauth
 
 engine = create_engine('sqlite:///mydatabase.sqlite3', connect_args={'check_same_thread': False})
                       
 Session = sessionmaker(engine)
 session = Session()
-Logged_IN = False
 current_user = {}
+
+
+names = []
+usernames = []
+passwords = []
+
+data = session.query(UserDeatails).all()
+print(data)
+for row in data:
+     names.append(row.Names)
+     usernames.append(row.Username)
+     passwords.append(row.Password)
+print(passwords)
+hashed_passwords = stauth.hasher(passwords).generate()
+
+authenticator = stauth.authenticate(names,usernames,hashed_passwords,
+    'some_cookie_name','some_signature_key',cookie_expiry_days=30)
+
+name, Logged_IN = authenticator.login('Login','main')
+
 
 #st.write("""
 # Medicine Inventory Application
 #**Visually** show data on a Medicine! 
 #""")
 
-options = ['Introduction','Register', 'Login']
-
 sidebar = st.sidebar
 
 
 sidebar.header('Dashboard Home')
-
+sidebar.text(Logged_IN)
 def intro():
      
      st.title('Medicine Inventory Application')
@@ -66,6 +83,7 @@ def Register():
 def get_input():
 
      if not Logged_IN: 
+          st.error('You have not loggedin Yet!!')
           return
    
      btn = sidebar.button("Save Data!!")   
@@ -184,11 +202,19 @@ def login():
     if user_name and pwd and search_btn:
           res = session.query(UserDeatails).filter_by(Username=user_name).first()
        
-          if res and res.password == user_name:
+          if res and res.Password == pwd:
                st.success('Logged in successfully')
-               options = ['Introduction','Add Data', 'View Data']
+               # global options
+               # options = ['Introduction','Add Data', 'View Data']
+               global Logged_IN
+               Logged_IN = True
+          else:
+               st.error('Login failed')
 
-
+if Logged_IN:
+     options = ['Introduction','Add Data', 'View Data']
+else:
+     options = ['Introduction','Register', 'Login']
 
 selOption = sidebar.selectbox('Select any option', options)
 

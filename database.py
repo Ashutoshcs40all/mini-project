@@ -22,7 +22,7 @@ class MedicineDetails(Base):
 class UserDeatails(Base):
     __tablename__ = "User Details"
     id = Column(Integer, primary_key=True, autoincrement= True)
-    Names = column(String)
+    Names = Column(String)
     Username = Column(String)
     Email_id = Column(String)
     Password = Column(String)
